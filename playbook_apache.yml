@@ -1,0 +1,6 @@
+---
+- name: установка апаче
+  hosts: myhosts
+  become: yes
+  roles:
+    - apache_info
