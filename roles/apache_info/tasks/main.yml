@@ -1,0 +1,42 @@
+---
+- name: Установка Apache
+  apt:
+    name: apache2
+    state: present
+    update_cache: yes
+
+- name: Apache включен и запущен
+  systemd:
+    name: apache2
+    enabled: yes
+    state: started
+
+- name: Создание файла index.html
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart apache
+
+- name: Install UFW
+  apt:
+    name: ufw
+    state: present
+
+- name: Enable UFW
+  community.general.ufw:
+    state: enabled
+
+- name: Открытие порта 80
+  community.general.ufw:
+    rule: allow
+    port: "80"
+    proto: tcp
+
+- name: Проверка доступности веб сайта
+  uri:
+    url: "http://{{ ansible_default_ipv4.address }}"
+    status_code: 200
+

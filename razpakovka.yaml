@@ -1,0 +1,22 @@
+---
+- name: Download
+  hosts: myhosts
+  become: yes
+
+  tasks:
+    - name: Create directory for extraction
+      file:
+        path: "/opt/kafka"
+        state: directory
+        mode: "0755"
+
+    - name: Download Kafka archive
+      get_url:
+        url: "https://dlcdn.apache.org/kafka/4.1.1/kafka_2.13-4.1.1.tgz"
+        dest: "/tmp/kafka.tgz"
+
+    - name: Extract archive
+      unarchive:
+        src: "/tmp/kafka.tgz"
+        dest: "/opt/kafka"
+        remote_src: yes
